@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://adeel-ariq.netlify.app/sitemap.xml
+
