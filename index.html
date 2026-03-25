@@ -78,10 +78,9 @@
       
       body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: #0a0a0a;
         color: #ffffff;
         overflow-x: hidden;
-        transition: background-color 0.3s ease, color 0.3s ease;
+        transition: color 0.3s ease;
       }
 
       /* Theme tokens (used by Tailwind arbitrary values like bg-[var(--bg-primary)]) */
@@ -113,7 +112,6 @@
         --footer-bg: #f5f5f5;
         --menu-bg: rgba(255, 255, 255, 0.95);
         --menu-hover: rgba(0, 0, 0, 0.05);
-        background: var(--bg-primary);
         color: var(--text-primary);
       }
 
@@ -311,7 +309,10 @@
 }
     </script>
   </head>
-  <body class="bg-[var(--bg-primary)] text-[color:var(--text-primary)]" itemscope itemtype="https://schema.org/Person">
+  <body class="text-[color:var(--text-primary)]" itemscope itemtype="https://schema.org/Person">
+    <!-- Minimal Starfield Background -->
+    <canvas id="vanta-bg" class="fixed inset-0 z-[-1] transition-colors duration-300 pointer-events-none"></canvas>
+
     <!-- Navigation -->
     <nav class="navbar fixed top-0 left-0 right-0 z-50">
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
@@ -402,7 +403,7 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-32 bg-[var(--bg-primary)]">
+    <section id="about" class="py-32 relative">
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <!-- Profile Image -->
@@ -501,7 +502,7 @@
     <div class="section-divider"></div>
 
     <!-- What I Do Section -->
-    <section id="what-i-do" class="py-32 bg-[var(--bg-primary)]">
+    <section id="what-i-do" class="py-32 relative">
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <h2 class="text-5xl lg:text-6xl font-bold text-center mb-20 text-[color:var(--text-primary)]">
           What I Do
@@ -551,7 +552,7 @@
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="py-32 bg-[var(--bg-primary)]">
+    <section id="projects" class="py-32 relative">
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="text-center mb-20">
           <h2 class="text-5xl lg:text-6xl font-bold mb-4 text-[color:var(--text-primary)]">Featured Projects</h2>
@@ -766,7 +767,7 @@
     <div class="section-divider"></div>
 
     <!-- Skills Section -->
-    <section id="skills" class="py-32 bg-[var(--bg-primary)]">
+    <section id="skills" class="py-32 relative">
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="text-center mb-20">
           <h2 class="text-5xl lg:text-6xl font-bold mb-4 text-[color:var(--text-primary)]">Skills</h2>
@@ -828,7 +829,7 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-32 bg-gradient-to-b from-[var(--bg-primary)] to-[var(--footer-bg)]">
+    <section id="contact" class="py-32 bg-gradient-to-b from-transparent to-[var(--footer-bg)] relative">
       <div class="max-w-4xl mx-auto px-6 lg:px-8">
         <div class="text-center mb-20">
           <h2 class="text-5xl lg:text-6xl font-bold mb-4 text-[color:var(--text-primary)]">Get in Touch</h2>
@@ -906,6 +907,78 @@
 
     <!-- JavaScript -->
     <script>
+      // Minimal Starfield Background
+      const canvas = document.getElementById('vanta-bg');
+      const ctx = canvas.getContext('2d');
+      let stars = [];
+      const numStars = 100; // Minimal amount
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function initStars() {
+        stars = [];
+        for (let i = 0; i < numStars; i++) {
+          stars.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            radius: Math.random() * 1.2,
+            speedX: (Math.random() - 0.5) * 0.15, // Very slow drift
+            speedY: (Math.random() - 0.5) * 0.15,
+            opacity: Math.random() * 0.5 + 0.1 // Subtle glow
+          });
+        }
+      }
+
+      function animateStars() {
+        const isDark = document.body.getAttribute('data-theme') !== 'light';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        if (isDark) {
+          ctx.fillStyle = '#0a0a0a';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          stars.forEach(star => {
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+            ctx.fill();
+            
+            star.x += star.speedX;
+            star.y += star.speedY;
+            
+            if (star.x < 0) star.x = canvas.width;
+            if (star.x > canvas.width) star.x = 0;
+            if (star.y < 0) star.y = canvas.height;
+            if (star.y > canvas.height) star.y = 0;
+          });
+        } else {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          stars.forEach(star => {
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(99, 102, 241, ${star.opacity * 0.4})`; // Subtle primary color dots in light mode
+            ctx.fill();
+            
+            star.x += star.speedX;
+            star.y += star.speedY;
+            
+            if (star.x < 0) star.x = canvas.width;
+            if (star.x > canvas.width) star.x = 0;
+            if (star.y < 0) star.y = canvas.height;
+            if (star.y > canvas.height) star.y = 0;
+          });
+        }
+        requestAnimationFrame(animateStars);
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+      initStars();
+      animateStars();
+
       // Theme toggle functionality
       function initTheme() {
         const theme = localStorage.getItem('theme') || 'dark';
@@ -915,6 +988,7 @@
       function applyTheme(theme) {
         document.body.setAttribute('data-theme', theme);
         updateThemeIcons(theme);
+        // The minimal starfield automatically adjusts based on data-theme attribute in requestAnimationFrame
       }
 
       function toggleTheme() {
