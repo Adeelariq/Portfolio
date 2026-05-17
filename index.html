@@ -6,6 +6,13 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
+    <!-- Preconnect to external origins to reduce connection latency -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <!-- Preload above-the-fold profile image -->
+    <link rel="preload" as="image" href="me_opt.webp">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="abcdef123456" />
@@ -30,7 +37,7 @@
     <meta property="og:url" content="https://adeel-ariq.netlify.app/" />
     <meta property="og:title" content="Adeel Ariq - Frontend Web Developer | Portfolio" />
     <meta property="og:description" content="Adeel Ariq is a Frontend Web Developer specializing in HTML, CSS, JavaScript, and modern web technologies. View portfolio projects, skills, and contact information." />
-    <meta property="og:image" content="https://adeel-ariq.netlify.app/me.webp" />
+    <meta property="og:image" content="https://adeel-ariq.netlify.app/me_opt.webp" />
     <meta property="og:site_name" content="Adeel Ariq Portfolio" />
     <meta property="og:locale" content="en_US" />
     
@@ -39,7 +46,7 @@
     <meta name="twitter:url" content="https://adeel-ariq.netlify.app/" />
     <meta name="twitter:title" content="Adeel Ariq - Frontend Web Developer | Portfolio" />
     <meta name="twitter:description" content="Adeel Ariq is a Frontend Web Developer specializing in HTML, CSS, JavaScript, and modern web technologies." />
-    <meta name="twitter:image" content="https://adeel-ariq.netlify.app/me.webp" />
+    <meta name="twitter:image" content="https://adeel-ariq.netlify.app/me_opt.webp" />
     <meta name="twitter:creator" content="@Adeelariq" />
     
     <!-- Additional SEO -->
@@ -411,10 +418,11 @@
             <div class="relative">
               <div class="absolute -inset-4 bg-gradient-to-br from-primary to-secondary rounded-3xl blur-2xl opacity-30"></div>
               <img
-                src="me.webp"
+                src="me_opt.webp"
                 alt="Adeel Ariq - Frontend Web Developer and BCA student profile picture"
                 class="relative rounded-3xl shadow-2xl w-full max-w-md border-2 border-[color:var(--border-color)]"
                 loading="eager"
+                decoding="async"
                 width="400"
                 height="400"
               />
@@ -562,9 +570,11 @@
           <div class="card-hover bg-[var(--card-bg)] backdrop-blur-md rounded-2xl overflow-hidden border border-[color:var(--border-color)] hover:border-primary/50">
             <div class="relative overflow-hidden">
               <img
-                src="paper_thesis.png"
+                src="paper_thesis.webp"
                 class="w-full h-64 object-cover"
                 alt="Thesis Treasure Website project by Adeel Ariq - Frontend Web Developer"
+                loading="lazy"
+                decoding="async"
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
             </div>
@@ -593,6 +603,8 @@
       src="Champion.webp"
       class="w-full h-64 object-cover"
       alt="Champion Textiles Website project by Adeel Ariq - Frontend Web Developer"
+      loading="lazy"
+      decoding="async"
     />
     <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
   </div>
@@ -616,9 +628,11 @@
 <div class="card-hover bg-[var(--card-bg)] backdrop-blur-md rounded-2xl overflow-hidden border border-[color:var(--border-color)] hover:border-primary/50">
   <div class="relative overflow-hidden">
     <img
-      src="VentureIQ.png"
+      src="VentureIQ.webp"
       class="w-full h-64 object-cover"
       alt="VentureIQ AI Business Intelligence Platform by Adeel Ariq"
+      loading="lazy"
+      decoding="async"
     />
     <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
   </div>
@@ -653,9 +667,11 @@
           <div class="card-hover bg-[var(--card-bg)] backdrop-blur-md rounded-2xl overflow-hidden border border-[color:var(--border-color)] hover:border-primary/50">
             <div class="relative overflow-hidden">
               <img
-                src="tram.png"
+                src="tram.webp"
                 class="w-full h-64 object-cover"
                 alt="Tram A Legacy - Kashmiri Copper Utensils Website by Adeel Ariq"
+                loading="lazy"
+                decoding="async"
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
             </div>
@@ -693,6 +709,8 @@
                 src="result_logo.png"
                 class="w-full h-64 object-cover"
                 alt="Exam Result Portal project by Adeel Ariq - Frontend Web Developer"
+                loading="lazy"
+                decoding="async"
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
             </div>
@@ -718,9 +736,11 @@
           <div class="card-hover bg-[var(--card-bg)] backdrop-blur-md rounded-2xl overflow-hidden border border-[color:var(--border-color)] hover:border-primary/50">
             <div class="relative overflow-hidden">
               <img
-                src="unnamed.png"
+                src="unnamed.webp"
                 class="w-full h-64 object-cover"
                 alt="Tic Tac Toe Game project by Adeel Ariq - Frontend Web Developer"
+                loading="lazy"
+                decoding="async"
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
             </div>
@@ -748,6 +768,8 @@
                 src="rock-paper-scissors-neon-icons.jpg"
                 class="w-full h-64 object-cover"
                 alt="Rock Paper Scissors Game project by Adeel Ariq - Frontend Web Developer"
+                loading="lazy"
+                decoding="async"
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
             </div>
@@ -772,9 +794,11 @@
           <div class="card-hover bg-[var(--card-bg)] backdrop-blur-md rounded-2xl overflow-hidden border border-[color:var(--border-color)] hover:border-primary/50">
             <div class="relative overflow-hidden">
               <img
-                src="dal-lake-kashmir-in-winter.jpg"
+                src="dal-lake-kashmir-in-winter.webp"
                 class="w-full h-64 object-cover"
                 alt="Houseboats of Kashmir website project by Adeel Ariq - Frontend Web Developer"
+                loading="lazy"
+                decoding="async"
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
             </div>
@@ -801,6 +825,8 @@
                 src="Fitness Hive.webp"
                 class="w-full h-64 object-cover"
                 alt="Gym Website project by Adeel Ariq - Frontend Web Developer"
+                loading="lazy"
+                decoding="async"
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
             </div>
