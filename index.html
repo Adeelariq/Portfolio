@@ -10,9 +10,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <!-- Google Fonts - loaded as a non-render-blocking link (not @import) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
     <!-- Preload above-the-fold profile image -->
     <link rel="preload" as="image" href="me_opt.webp">
+    <!-- Local purged Tailwind CSS (16 KB) instead of CDN (350 KB) -->
+    <link rel="stylesheet" href="tailwind.output.css">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="abcdef123456" />
@@ -54,24 +57,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: '#6366f1',
-              secondary: '#8b5cf6',
-            },
-          },
-        },
-      };
-    </script>
+    <!-- Tailwind CDN removed - using local purged CSS instead -->
 
     <!-- Custom styles -->
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+      /* Google Fonts @import removed - now loaded via <link> tag above (non-render-blocking) */
       
       * {
         margin: 0;
@@ -277,7 +267,7 @@
   "description": "Adeel Ariq is a Frontend Web Developer specializing in HTML, CSS, JavaScript, and modern web technologies. Currently pursuing BCA and building innovative web experiences.",
   "email": "Adeelariq786@gmail.com",
   "telephone": "+91 6005469890",
-  "image": "https://adeel-ariq.netlify.app/me.webp",
+  "image": "https://adeel-ariq.netlify.app/me_opt.webp",
   "sameAs": [
     "https://github.com/Adeelariq",
     "https://www.linkedin.com/in/adeel-ariq-2a30513a2/"

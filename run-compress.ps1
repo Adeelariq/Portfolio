@@ -25,5 +25,4 @@ foreach ($job in $jobs) {
     }
 }
 
-Write-Host ""
-Write-Host "Done! Now update index.html src attributes to point to the new .webp files." -ForegroundColor Yellow
+Write-Host "Done." -ForegroundColor Yellow

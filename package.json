@@ -1,0 +1,24 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tailwindcss -i tailwind.input.css -o tailwind.output.css --minify",
+    "watch": "tailwindcss -i tailwind.input.css -o tailwind.output.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Adeelariq/project-bolt-sb1-teipyp2i.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Adeelariq/project-bolt-sb1-teipyp2i/issues"
+  },
+  "homepage": "https://github.com/Adeelariq/project-bolt-sb1-teipyp2i#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
+}
