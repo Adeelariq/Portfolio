@@ -78,6 +78,13 @@
         color: #ffffff;
         overflow-x: hidden;
         transition: color 0.3s ease;
+        /* Prevent white flash: default dark bg before JS/canvas initializes */
+        background-color: #0a0a0a;
+      }
+
+      /* Light theme body bg (overridden by data-theme attribute) */
+      body[data-theme="light"] {
+        background-color: #ffffff;
       }
 
       /* Theme tokens (used by Tailwind arbitrary values like bg-[var(--bg-primary)]) */
@@ -307,8 +314,17 @@
     </script>
   </head>
   <body class="text-[color:var(--text-primary)]" itemscope itemtype="https://schema.org/Person">
+    <!-- Inline theme init: runs before first paint to avoid flash -->
+    <script>
+      (function() {
+        var t = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', t);
+        if (t === 'light') document.body.style.backgroundColor = '#ffffff';
+        else document.body.style.backgroundColor = '#0a0a0a';
+      })();
+    </script>
     <!-- Minimal Starfield Background -->
-    <canvas id="vanta-bg" class="fixed inset-0 z-[-1] transition-colors duration-300 pointer-events-none"></canvas>
+    <canvas id="vanta-bg" class="fixed inset-0 z-[-1] pointer-events-none"></canvas>
 
     <!-- Navigation -->
     <nav class="navbar fixed top-0 left-0 right-0 z-50">
@@ -1056,6 +1072,20 @@
       window.addEventListener('resize', resizeCanvas);
       resizeCanvas();
       initStars();
+      // Draw first frame immediately (synchronously) to avoid blank canvas flash
+      (function drawFirstFrame() {
+        const isDark = document.body.getAttribute('data-theme') !== 'light';
+        ctx.fillStyle = isDark ? '#0a0a0a' : '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(function(star) {
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+          ctx.fillStyle = isDark
+            ? 'rgba(255,255,255,' + star.opacity + ')'
+            : 'rgba(99,102,241,' + (star.opacity * 0.4) + ')';
+          ctx.fill();
+        });
+      })();
       animateStars();
 
       // Theme toggle functionality
