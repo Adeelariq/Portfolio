@@ -1,9 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const TOTAL_FRAMES = 192;
+const INITIAL_PRELOAD_COUNT = 25;
+const MAX_CONCURRENT_DOWNLOADS = 3;
+const MAX_CACHE_LIMIT = 80;
+
 const VIDEO_SRC = "/images/Firefly Astronaut drifts near the Sun, exactly as shown in the first reference image. The Sun remain.mp4";
 const VIDEO_FALLBACK_SRC = "/images/astronaut.mp4";
 
@@ -11,6 +15,47 @@ const VIDEO_FALLBACK_SRC = "/images/astronaut.mp4";
 const getFrameUrl = (index: number) => {
   const frameNum = String(index + 1).padStart(5, "0");
   return `/new-images/${frameNum}.jpg`;
+};
+
+// Asynchronously load and decode an image off the main thread
+const decodeImage = (src: string): Promise<HTMLImageElement | ImageBitmap> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      if (typeof window !== "undefined" && typeof window.createImageBitmap === "function") {
+        window.createImageBitmap(img)
+          .then((bitmap) => {
+            resolve(bitmap);
+          })
+          .catch(() => {
+            if (typeof img.decode === "function") {
+              img.decode()
+                .then(() => resolve(img))
+                .catch(() => resolve(img));
+            } else {
+              resolve(img);
+            }
+          });
+      } else if (typeof img.decode === "function") {
+        img.decode()
+          .then(() => resolve(img))
+          .catch(() => resolve(img));
+      } else {
+        resolve(img);
+      }
+    };
+    img.onerror = (err) => {
+      reject(err);
+    };
+  });
+};
+
+const releaseImage = (img: HTMLImageElement | ImageBitmap | null) => {
+  if (!img) return;
+  if ("close" in img && typeof img.close === "function") {
+    img.close();
+  }
 };
 
 export default function HeroJourney() {
@@ -22,66 +67,19 @@ export default function HeroJourney() {
   const [useVideo, setUseVideo] = useState(false);
 
   // Initialize array with nulls for 192 frames to store them as they stream in
-  const preloadedImagesRef = useRef<(HTMLImageElement | null)[]>(
+  const preloadedImagesRef = useRef<(HTMLImageElement | ImageBitmap | null)[]>(
     Array(TOTAL_FRAMES).fill(null)
   );
   const activeFrameIndexRef = useRef<number>(0);
   const isResizingRef = useRef<boolean>(false);
 
-  // 1. Preload image sequence frames completely before enabling scrolling
-  useEffect(() => {
-    let loadedCount = 0;
-    let frameZeroLoaded = false;
-
-    // Direct block scroll on mount
-    document.body.style.overflow = "hidden";
-
-    const handleImageLoad = (index: number, img: HTMLImageElement) => {
-      preloadedImagesRef.current[index] = img;
-      loadedCount++;
-      
-      // Update progress percent
-      const percent = Math.round((loadedCount / TOTAL_FRAMES) * 100);
-      setProgress(percent);
-
-      // Draw the first frame immediately once loaded so the page is never blank
-      if (index === 0) {
-        frameZeroLoaded = true;
-        requestAnimationFrame(drawFrame);
-      }
-
-      // Preload all 192 frames before disabling loading screen & enabling scroll
-      if (loadedCount === TOTAL_FRAMES && frameZeroLoaded) {
-        setIsLoading(false);
-        document.body.style.overflow = "";
-      }
-    };
-
-    const handleImageError = (index: number) => {
-      console.warn(`Frame ${index} failed to load, skipping.`);
-      loadedCount++;
-      
-      if (loadedCount === TOTAL_FRAMES) {
-        setIsLoading(false);
-        document.body.style.overflow = "";
-      }
-    };
-
-    // Trigger load of all frames in parallel
-    for (let i = 0; i < TOTAL_FRAMES; i++) {
-      const img = new Image();
-      img.src = getFrameUrl(i);
-      img.onload = () => handleImageLoad(i, img);
-      img.onerror = () => handleImageError(i);
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
+  // Tracks active downloads to limit network concurrency
+  const activeDownloadsRef = useRef<Set<number>>(new Set());
+  // Tracks scroll direction for prioritizing downloads
+  const scrollDirectionRef = useRef<"forward" | "backward">("forward");
 
   // 2. Draw canvas frames using "contain" strategy and nearest loaded frame fallback
-  const drawFrame = () => {
+  const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -134,10 +132,180 @@ export default function HeroJourney() {
     ctx.fillRect(0, 0, cw, ch);
 
     ctx.drawImage(image, x, y, nw, nh);
-  };
+  }, []);
+
+  // Keep track of loaded image cache size to maintain stable GPU/system memory
+  const manageCacheMemory = useCallback(() => {
+    let loadedCount = 0;
+    const evictableIndices: number[] = [];
+
+    for (let i = 0; i < TOTAL_FRAMES; i++) {
+      if (preloadedImagesRef.current[i] !== null) {
+        loadedCount++;
+        // Do not evict initial preload frames (0 to INITIAL_PRELOAD_COUNT - 1)
+        if (i >= INITIAL_PRELOAD_COUNT) {
+          evictableIndices.push(i);
+        }
+      }
+    }
+
+    if (loadedCount <= MAX_CACHE_LIMIT) return;
+
+    const curr = activeFrameIndexRef.current;
+    // Sort indices furthest from current active index first
+    evictableIndices.sort((a, b) => Math.abs(b - curr) - Math.abs(a - curr));
+
+    const numToEvict = loadedCount - MAX_CACHE_LIMIT;
+    for (let i = 0; i < Math.min(numToEvict, evictableIndices.length); i++) {
+      const evictIdx = evictableIndices[i];
+      const img = preloadedImagesRef.current[evictIdx];
+      if (img) {
+        releaseImage(img);
+        preloadedImagesRef.current[evictIdx] = null;
+      }
+    }
+  }, []);
+
+  // Asynchronously download and decode remaining frames with priority sorting
+  const triggerBackgroundLoad = useCallback(() => {
+    const unloadedIndices: number[] = [];
+    for (let i = 0; i < TOTAL_FRAMES; i++) {
+      if (preloadedImagesRef.current[i] === null && !activeDownloadsRef.current.has(i)) {
+        unloadedIndices.push(i);
+      }
+    }
+
+    if (unloadedIndices.length === 0) return;
+    if (activeDownloadsRef.current.size >= MAX_CONCURRENT_DOWNLOADS) return;
+
+    const curr = activeFrameIndexRef.current;
+    const dir = scrollDirectionRef.current;
+
+    // Prioritize next 10 frames in scroll direction, then nearest remaining
+    const getFramePriority = (index: number) => {
+      if (index === curr) return 0;
+
+      if (dir === "forward") {
+        if (index > curr && index <= curr + 10) {
+          return index - curr; // Priority 1 to 10
+        }
+      } else {
+        if (index < curr && index >= curr - 10) {
+          return curr - index; // Priority 1 to 10
+        }
+      }
+
+      return 100 + Math.abs(index - curr);
+    };
+
+    unloadedIndices.sort((a, b) => getFramePriority(a) - getFramePriority(b));
+
+    const slotsAvailable = MAX_CONCURRENT_DOWNLOADS - activeDownloadsRef.current.size;
+    const toDownload = unloadedIndices.slice(0, slotsAvailable);
+
+    toDownload.forEach((idx) => {
+      activeDownloadsRef.current.add(idx);
+
+      const scheduleWork = (cb: () => void) => {
+        if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+          window.requestIdleCallback(() => cb());
+        } else {
+          setTimeout(cb, 1);
+        }
+      };
+
+      scheduleWork(() => {
+        decodeImage(getFrameUrl(idx))
+          .then((decoded) => {
+            preloadedImagesRef.current[idx] = decoded;
+            activeDownloadsRef.current.delete(idx);
+
+            manageCacheMemory();
+
+            // If the loaded frame is the current frame, draw it immediately
+            if (idx === activeFrameIndexRef.current) {
+              requestAnimationFrame(drawFrame);
+            }
+
+            triggerBackgroundLoad();
+          })
+          .catch((err) => {
+            console.warn(`Failed to load frame ${idx}:`, err);
+            activeDownloadsRef.current.delete(idx);
+            triggerBackgroundLoad();
+          });
+      });
+    });
+  }, [drawFrame, manageCacheMemory]);
+
+  // 1. Preload initial image sequence frames before hiding loading screen
+  useEffect(() => {
+    let loadedCount = 0;
+
+    // Direct block scroll on mount
+    document.body.style.overflow = "hidden";
+
+    const handleImageLoad = (index: number, img: HTMLImageElement | ImageBitmap) => {
+      preloadedImagesRef.current[index] = img;
+      loadedCount++;
+
+      // Update progress percent based ONLY on initial preload count
+      const percent = Math.round((loadedCount / INITIAL_PRELOAD_COUNT) * 100);
+      setProgress(percent);
+
+      // Draw the first frame immediately once loaded so the page is never blank
+      if (index === 0) {
+        requestAnimationFrame(drawFrame);
+      }
+
+      // Hide loading screen and enable scroll as soon as the initial frames are ready
+      if (loadedCount === INITIAL_PRELOAD_COUNT) {
+        requestAnimationFrame(() => {
+          // Double-ensure frame 1 (index 0) is drawn on canvas before loader screen fades out
+          drawFrame();
+          setIsLoading(false);
+          document.body.style.overflow = "";
+          // Start background downloader asynchronously
+          triggerBackgroundLoad();
+        });
+      }
+    };
+
+    const handleImageError = (index: number) => {
+      console.warn(`Initial frame ${index} failed to load, skipping.`);
+      loadedCount++;
+
+      const percent = Math.round((loadedCount / INITIAL_PRELOAD_COUNT) * 100);
+      setProgress(percent);
+
+      if (loadedCount === INITIAL_PRELOAD_COUNT) {
+        requestAnimationFrame(() => {
+          drawFrame();
+          setIsLoading(false);
+          document.body.style.overflow = "";
+          triggerBackgroundLoad();
+        });
+      }
+    };
+
+    // Trigger load of the initial frames in parallel
+    for (let i = 0; i < INITIAL_PRELOAD_COUNT; i++) {
+      decodeImage(getFrameUrl(i))
+        .then((img) => handleImageLoad(i, img))
+        .catch(() => handleImageError(i));
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      // Clean up / release all loaded image bitmaps
+      preloadedImagesRef.current.forEach((img) => {
+        if (img) releaseImage(img);
+      });
+    };
+  }, [drawFrame, triggerBackgroundLoad]);
 
   // 3. Handle responsive resizing of the canvas backing store (DPR clamped to 2)
-  const handleResize = () => {
+  const handleResize = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -149,7 +317,7 @@ export default function HeroJourney() {
     canvas.height = rect.height * dpr;
 
     drawFrame();
-  };
+  }, [drawFrame]);
 
   // Set initial dimensions immediately on mount so the first frame loads at full resolution
   useEffect(() => {
@@ -158,7 +326,7 @@ export default function HeroJourney() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [handleResize]);
 
   // 4. Native window scroll calculation mapped to frame progress
   useEffect(() => {
@@ -176,11 +344,14 @@ export default function HeroJourney() {
       if (!useVideo) {
         // Map scroll progress directly from top of page (0%) to bottom of footer (100%)
         const frameIndex = Math.round(scrollProgress * (TOTAL_FRAMES - 1));
-        if (frameIndex !== activeFrameIndexRef.current) {
+        const prevIndex = activeFrameIndexRef.current;
+        if (frameIndex !== prevIndex) {
+          scrollDirectionRef.current = frameIndex > prevIndex ? "forward" : "backward";
           activeFrameIndexRef.current = frameIndex;
           if (!isResizingRef.current) {
             requestAnimationFrame(drawFrame);
           }
+          triggerBackgroundLoad();
         }
       } else {
         const video = videoRef.current;
@@ -202,7 +373,7 @@ export default function HeroJourney() {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
-  }, [isLoading, useVideo]);
+  }, [isLoading, useVideo, drawFrame, triggerBackgroundLoad]);
 
   // Smooth scroll helper for the Explore button (smoothly targets projects section)
   const scrollToProjects = (e: React.MouseEvent) => {
