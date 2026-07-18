@@ -1,5 +1,5 @@
 [build]
-  publish = "."
+  publish = "out"
   command = "npm run build"
 
 # Enable Brotli/Gzip compression for all text assets
