@@ -1,24 +1,31 @@
 {
   "name": "portfolio",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Premium space-themed portfolio for Adeel Ariq",
   "scripts": {
-    "build": "tailwindcss -i tailwind.input.css -o tailwind.output.css --minify",
-    "watch": "tailwindcss -i tailwind.input.css -o tailwind.output.css --watch"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Adeelariq/project-bolt-sb1-teipyp2i.git"
+  "dependencies": {
+    "next": "14.2.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "gsap": "^3.12.5",
+    "framer-motion": "^11.2.10",
+    "lenis": "^1.1.5",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.3.0",
+    "lucide-react": "^0.379.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Adeelariq/project-bolt-sb1-teipyp2i/issues"
-  },
-  "homepage": "https://github.com/Adeelariq/project-bolt-sb1-teipyp2i#readme",
   "devDependencies": {
-    "tailwindcss": "^3.4.19"
+    "typescript": "^5.4.5",
+    "@types/node": "^20.12.7",
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
+    "tailwindcss": "^3.4.19",
+    "postcss": "^8.4.38",
+    "autoprefixer": "^10.4.19"
   }
 }
