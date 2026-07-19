@@ -1,5 +1,6 @@
 node_modules/
 .next/
+out/
 run-compress.ps1
 compress-images.ps1
 .env*.local
