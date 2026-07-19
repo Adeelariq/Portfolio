@@ -120,8 +120,8 @@ export default function HeroJourney() {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    // Contain Strategy (fills the entire screen, fitting inside, astronaut/planets never cropped, centered)
-    const ratio = Math.min(cw / iw, ch / ih);
+    // Cover Strategy (fills the entire screen, scaling to cover, cropped if necessary, centered)
+    const ratio = Math.max(cw / iw, ch / ih);
     const nw = iw * ratio;
     const nh = ih * ratio;
     const x = (cw - nw) / 2;
