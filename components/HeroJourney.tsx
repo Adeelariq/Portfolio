@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import OutlineFillText from "./FlickerText";
 
 const TOTAL_FRAMES = 192;
 
@@ -473,9 +474,34 @@ export default function HeroJourney() {
               Frontend Developer &bull; Creative Developer<br />
               Building premium digital experiences.
             </p>
-            <h2 className="text-2xl md:text-4xl font-bold tracking-tighter uppercase text-white leading-tight mb-8">
-              Let's Build Something<br />Extraordinary.
-            </h2>
+            <OutlineFillText
+              tag="h2"
+              text={"LET'S BUILD SOMETHING\nEXTRAORDINARY."}
+              className="text-2xl md:text-4xl font-bold tracking-tighter uppercase text-white leading-tight mb-8"
+              style={{ whiteSpace: "pre-line" }}
+              font={{}}
+              flicker={{
+                position: "above",
+                replay: "yes",
+                restState: "filled",
+                delay: 0.5,
+                ease: { type: "tween", duration: 1.5, ease: "easeInOut" },
+                flickerCount: 8,
+                showStroke: false,
+                strokePosition: "start",
+                strokeCount: 1,
+                strokeColor: "#ffffff",
+                strokeWidth: 1.5,
+                wordFlickerEnabled: false,
+                shakeEnabled: false,
+                shakeWidth: 10,
+                shakeSpeed: 10,
+                letterFlickerEnabled: true,
+                letterFlickerMode: "opacity",
+                letterFlickerOpacity: 10,
+                letterFlickerIntensity: 15,
+              }}
+            />
             <div className="flex gap-4 flex-wrap">
               <a
                 href="#projects"
