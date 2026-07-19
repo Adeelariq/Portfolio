@@ -17,7 +17,7 @@ export default function PortfolioContent() {
             <div className="relative w-full max-w-md aspect-square rounded-2xl overflow-hidden border border-white/10 bg-neutral-900">
               <Image
                 src="/images/me_opt.webp"
-                alt="Adeel Ariq - Frontend Web Developer and BCA student"
+                alt="Adeel Ariq - Frontend Web Developer, BCA student, and aspiring Data Analyst"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover hover:scale-105 transition-all duration-700"
@@ -33,10 +33,11 @@ export default function PortfolioContent() {
             <div className="space-y-6 text-neutral-400 leading-relaxed text-lg font-light tracking-wide">
               <p>
                 I am currently pursuing a Bachelor of Computer Applications (BCA)
-                and I am exploring the world of programming and web development. 
-                Although I do not have professional experience yet, I am continuously 
-                learning and building projects to improve my skills. I am passionate 
-                about creating user-friendly and visually appealing websites.
+                and studying to become a data analyst, while exploring the world
+                of programming and web development. Although I do not have professional
+                experience yet, I am continuously learning and building projects
+                to improve my skills. I am passionate about creating user-friendly,
+                visually appealing interfaces, and uncovering insights from data.
               </p>
               <p>
                 Along with programming, I enjoy exploring design patterns,
