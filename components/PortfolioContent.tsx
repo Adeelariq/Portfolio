@@ -98,64 +98,7 @@ export default function PortfolioContent() {
         </div>
       </section>
 
-      {/* What I Do Section */}
-      <section id="what-i-do" className="py-32 md:py-48 w-full bg-transparent border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-20 text-center uppercase text-white/90">
-            What I Do
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Card 1 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 border border-white/10 rounded-lg flex items-center justify-center mb-8 text-neutral-400">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-medium mb-4 text-white/90 tracking-wide">Web Development</h3>
-                <p className="text-neutral-400 font-light text-base leading-relaxed tracking-wide">
-                  I build interactive and responsive websites using HTML, CSS
-                  and JavaScript with a foundational understanding of PHP to add
-                  basic dynamic features.
-                </p>
-              </div>
-            </div>
-            {/* Card 2 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 border border-white/10 rounded-lg flex items-center justify-center mb-8 text-neutral-400">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-medium mb-4 text-white/90 tracking-wide">Frontend Design</h3>
-                <p className="text-neutral-400 font-light text-base leading-relaxed tracking-wide">
-                  I focus on creating user-friendly interfaces and seamless
-                  designs that enhance user experience. I have also fundamental
-                  knowledge of modern layout systems.
-                </p>
-              </div>
-            </div>
-            {/* Card 3 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 border border-white/10 rounded-lg flex items-center justify-center mb-8 text-neutral-400">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-medium mb-4 text-white/90 tracking-wide">Logic Building</h3>
-                <p className="text-neutral-400 font-light text-base leading-relaxed tracking-wide">
-                  I have experience in C programming, working on
-                  problem-solving, algorithms, and foundational concepts of
-                  programming.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+
 
       {/* Projects Section */}
       <section id="projects" className="py-32 md:py-48 w-full bg-transparent border-b border-white/5">
@@ -174,7 +117,7 @@ export default function PortfolioContent() {
             <div className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
               <div className="relative h-48 w-full bg-neutral-900 border-b border-white/5 overflow-hidden">
                 <Image
-                  src="/images/chinar_agro_ai.png"
+                  src="/images/chinar_agro_ai.webp"
                   alt="Chinar Agro AI project by Adeel Ariq"
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
@@ -580,6 +523,65 @@ export default function PortfolioContent() {
                     <span className="text-xs font-light text-neutral-300 tracking-wider">PANDAS</span>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What I Do Section */}
+      <section id="what-i-do" className="py-32 md:py-48 w-full bg-transparent border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-20 text-center uppercase text-white/90">
+            What I Do
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Card 1 */}
+            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 border border-white/10 rounded-lg flex items-center justify-center mb-8 text-neutral-400">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-medium mb-4 text-white/90 tracking-wide">Web Development</h3>
+                <p className="text-neutral-400 font-light text-base leading-relaxed tracking-wide">
+                  I build interactive and responsive websites using HTML, CSS
+                  and JavaScript with a foundational understanding of PHP to add
+                  basic dynamic features.
+                </p>
+              </div>
+            </div>
+            {/* Card 2 */}
+            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 border border-white/10 rounded-lg flex items-center justify-center mb-8 text-neutral-400">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-medium mb-4 text-white/90 tracking-wide">Frontend Design</h3>
+                <p className="text-neutral-400 font-light text-base leading-relaxed tracking-wide">
+                  I focus on creating user-friendly interfaces and seamless
+                  designs that enhance user experience. I have also fundamental
+                  knowledge of modern layout systems.
+                </p>
+              </div>
+            </div>
+            {/* Card 3 */}
+            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 border border-white/10 rounded-lg flex items-center justify-center mb-8 text-neutral-400">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-medium mb-4 text-white/90 tracking-wide">Logic Building</h3>
+                <p className="text-neutral-400 font-light text-base leading-relaxed tracking-wide">
+                  I have experience in C programming, working on
+                  problem-solving, algorithms, and foundational concepts of
+                  programming.
+                </p>
               </div>
             </div>
           </div>

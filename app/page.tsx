@@ -24,6 +24,7 @@ export default function Home() {
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 1.0,
+      syncTouch: true, // Enable smooth momentum scrolling on touch devices
     });
 
     // 2. Continuous requestAnimationFrame scroll loop
@@ -74,16 +75,16 @@ export default function Home() {
                 About
               </a>
               <a
-                href="#skills"
-                className="text-[10px] font-light tracking-[0.2em] text-neutral-400 hover:text-white uppercase transition-colors duration-300"
-              >
-                Skills
-              </a>
-              <a
                 href="#projects"
                 className="text-[10px] font-light tracking-[0.2em] text-neutral-400 hover:text-white uppercase transition-colors duration-300"
               >
                 Projects
+              </a>
+              <a
+                href="#skills"
+                className="text-[10px] font-light tracking-[0.2em] text-neutral-400 hover:text-white uppercase transition-colors duration-300"
+              >
+                Skills
               </a>
               <a
                 href="#contact"

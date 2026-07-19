@@ -70,6 +70,7 @@ export default function HeroJourney() {
   const activeFrameIndexRef = useRef<number>(0);
   const isResizingRef = useRef<boolean>(false);
   const isMobileRef = useRef<boolean>(false);
+  const lastWidthRef = useRef<number>(0);
 
   // Tracks active downloads to limit network concurrency
   const activeDownloadsRef = useRef<Set<number>>(new Set());
@@ -317,6 +318,10 @@ export default function HeroJourney() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const width = window.innerWidth;
+    if (lastWidthRef.current === width) return;
+    lastWidthRef.current = width;
+
     const rect = canvas.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2); // Clamped device pixel ratio
 
@@ -388,9 +393,9 @@ export default function HeroJourney() {
     e.preventDefault();
     const target = document.querySelector("#projects");
     if (target) {
-      const offsetTop = (target as HTMLElement).offsetTop;
+      const targetPosition = target.getBoundingClientRect().top + window.scrollY;
       window.scrollTo({
-        top: offsetTop,
+        top: targetPosition,
         behavior: "smooth",
       });
     }
