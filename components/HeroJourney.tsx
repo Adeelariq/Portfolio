@@ -4,24 +4,20 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const TOTAL_FRAMES = 192;
-const INITIAL_PRELOAD_COUNT = 25;
-const MAX_CONCURRENT_DOWNLOADS = 3;
-const MAX_CACHE_LIMIT = 80;
 
 const VIDEO_SRC = "/images/Firefly Astronaut drifts near the Sun, exactly as shown in the first reference image. The Sun remain.mp4";
 const VIDEO_FALLBACK_SRC = "/images/astronaut.mp4";
 
-// Utility to pad frame index to match filenames (e.g. 00001.jpg)
+// Utility to pad frame index to match filenames (e.g. 00001.webp)
 const getFrameUrl = (index: number) => {
   const frameNum = String(index + 1).padStart(5, "0");
-  return `/new-images/${frameNum}.jpg`;
+  return `/new-images/${frameNum}.webp`;
 };
 
 // Asynchronously load and decode an image off the main thread
 const decodeImage = (src: string): Promise<HTMLImageElement | ImageBitmap> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.src = src;
     img.onload = () => {
       if (typeof window !== "undefined" && typeof window.createImageBitmap === "function") {
         window.createImageBitmap(img)
@@ -48,6 +44,7 @@ const decodeImage = (src: string): Promise<HTMLImageElement | ImageBitmap> => {
     img.onerror = (err) => {
       reject(err);
     };
+    img.src = src;
   });
 };
 
@@ -72,6 +69,7 @@ export default function HeroJourney() {
   );
   const activeFrameIndexRef = useRef<number>(0);
   const isResizingRef = useRef<boolean>(false);
+  const isMobileRef = useRef<boolean>(false);
 
   // Tracks active downloads to limit network concurrency
   const activeDownloadsRef = useRef<Set<number>>(new Set());
@@ -136,26 +134,30 @@ export default function HeroJourney() {
 
   // Keep track of loaded image cache size to maintain stable GPU/system memory
   const manageCacheMemory = useCallback(() => {
+    const isMobile = isMobileRef.current;
+    const currentPreloadCount = isMobile ? 12 : 30;
+    const currentMaxCacheLimit = isMobile ? 40 : 100;
+
     let loadedCount = 0;
     const evictableIndices: number[] = [];
 
     for (let i = 0; i < TOTAL_FRAMES; i++) {
       if (preloadedImagesRef.current[i] !== null) {
         loadedCount++;
-        // Do not evict initial preload frames (0 to INITIAL_PRELOAD_COUNT - 1)
-        if (i >= INITIAL_PRELOAD_COUNT) {
+        // Do not evict initial preload frames (0 to currentPreloadCount - 1)
+        if (i >= currentPreloadCount) {
           evictableIndices.push(i);
         }
       }
     }
 
-    if (loadedCount <= MAX_CACHE_LIMIT) return;
+    if (loadedCount <= currentMaxCacheLimit) return;
 
     const curr = activeFrameIndexRef.current;
     // Sort indices furthest from current active index first
     evictableIndices.sort((a, b) => Math.abs(b - curr) - Math.abs(a - curr));
 
-    const numToEvict = loadedCount - MAX_CACHE_LIMIT;
+    const numToEvict = loadedCount - currentMaxCacheLimit;
     for (let i = 0; i < Math.min(numToEvict, evictableIndices.length); i++) {
       const evictIdx = evictableIndices[i];
       const img = preloadedImagesRef.current[evictIdx];
@@ -168,6 +170,9 @@ export default function HeroJourney() {
 
   // Asynchronously download and decode remaining frames with priority sorting
   const triggerBackgroundLoad = useCallback(() => {
+    const isMobile = isMobileRef.current;
+    const currentMaxConcurrentDownloads = isMobile ? 3 : 6;
+
     const unloadedIndices: number[] = [];
     for (let i = 0; i < TOTAL_FRAMES; i++) {
       if (preloadedImagesRef.current[i] === null && !activeDownloadsRef.current.has(i)) {
@@ -176,7 +181,7 @@ export default function HeroJourney() {
     }
 
     if (unloadedIndices.length === 0) return;
-    if (activeDownloadsRef.current.size >= MAX_CONCURRENT_DOWNLOADS) return;
+    if (activeDownloadsRef.current.size >= currentMaxConcurrentDownloads) return;
 
     const curr = activeFrameIndexRef.current;
     const dir = scrollDirectionRef.current;
@@ -200,7 +205,7 @@ export default function HeroJourney() {
 
     unloadedIndices.sort((a, b) => getFramePriority(a) - getFramePriority(b));
 
-    const slotsAvailable = MAX_CONCURRENT_DOWNLOADS - activeDownloadsRef.current.size;
+    const slotsAvailable = currentMaxConcurrentDownloads - activeDownloadsRef.current.size;
     const toDownload = unloadedIndices.slice(0, slotsAvailable);
 
     toDownload.forEach((idx) => {
@@ -240,6 +245,8 @@ export default function HeroJourney() {
 
   // 1. Preload initial image sequence frames before hiding loading screen
   useEffect(() => {
+    isMobileRef.current = window.innerWidth < 768;
+    const currentPreloadCount = isMobileRef.current ? 12 : 30;
     let loadedCount = 0;
 
     // Direct block scroll on mount
@@ -250,7 +257,7 @@ export default function HeroJourney() {
       loadedCount++;
 
       // Update progress percent based ONLY on initial preload count
-      const percent = Math.round((loadedCount / INITIAL_PRELOAD_COUNT) * 100);
+      const percent = Math.round((loadedCount / currentPreloadCount) * 100);
       setProgress(percent);
 
       // Draw the first frame immediately once loaded so the page is never blank
@@ -259,7 +266,7 @@ export default function HeroJourney() {
       }
 
       // Hide loading screen and enable scroll as soon as the initial frames are ready
-      if (loadedCount === INITIAL_PRELOAD_COUNT) {
+      if (loadedCount === currentPreloadCount) {
         requestAnimationFrame(() => {
           // Double-ensure frame 1 (index 0) is drawn on canvas before loader screen fades out
           drawFrame();
@@ -272,13 +279,13 @@ export default function HeroJourney() {
     };
 
     const handleImageError = (index: number) => {
-      console.warn(`Initial frame ${index} failed to load, skipping.`);
+      console.warn(`Failed to load initial frame ${index}`);
       loadedCount++;
 
-      const percent = Math.round((loadedCount / INITIAL_PRELOAD_COUNT) * 100);
+      const percent = Math.round((loadedCount / currentPreloadCount) * 100);
       setProgress(percent);
 
-      if (loadedCount === INITIAL_PRELOAD_COUNT) {
+      if (loadedCount === currentPreloadCount) {
         requestAnimationFrame(() => {
           drawFrame();
           setIsLoading(false);
@@ -289,8 +296,9 @@ export default function HeroJourney() {
     };
 
     // Trigger load of the initial frames in parallel
-    for (let i = 0; i < INITIAL_PRELOAD_COUNT; i++) {
-      decodeImage(getFrameUrl(i))
+    for (let i = 0; i < currentPreloadCount; i++) {
+      const url = getFrameUrl(i);
+      decodeImage(url)
         .then((img) => handleImageLoad(i, img))
         .catch(() => handleImageError(i));
     }
@@ -444,85 +452,23 @@ export default function HeroJourney() {
       {/* 3. Hero Journey Pinned Content triggers text scroll animations (Naturally flowing min-h-screen segments) */}
       <div className="relative w-full z-10 select-none bg-transparent">
         
-        {/* Section 1: Hero Intro (Headline: ADEEL ARIQ) */}
+        {/* Section 1: Hero Intro & CTA Combined */}
         <section className="min-h-screen w-full flex items-center justify-start px-6 md:px-24 bg-transparent">
           <motion.div
             initial={{ opacity: 0, y: 30, filter: "blur(12px)" }}
             whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-lg text-left"
+            className="max-w-2xl text-left"
           >
             <h1 className="text-5xl md:text-7xl font-bold tracking-tighter uppercase text-white leading-none mb-4">
               Adeel Ariq
             </h1>
-            <p className="text-neutral-400 font-light tracking-wide text-sm md:text-base leading-relaxed">
+            <p className="text-neutral-400 font-light tracking-wide text-sm md:text-base leading-relaxed mb-6">
               Frontend Developer &bull; Creative Developer<br />
               Building premium digital experiences.
             </p>
-          </motion.div>
-        </section>
-
-        {/* Section 2: Curiosity (Headline: Every journey starts with curiosity.) */}
-        <section className="min-h-screen w-full flex items-center justify-end px-6 md:px-24 bg-transparent">
-          <motion.div
-            initial={{ opacity: 0, y: 30, filter: "blur(12px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-lg text-left"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight uppercase text-white leading-tight">
-              Every journey<br />starts with curiosity.
-            </h2>
-          </motion.div>
-        </section>
-
-        {/* Section 3: Mars (Headline: Building ideas into reality.) */}
-        <section className="min-h-screen w-full flex items-center justify-start px-6 md:px-24 bg-transparent">
-          <motion.div
-            initial={{ opacity: 0, y: 30, filter: "blur(12px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-lg text-left"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight uppercase text-white leading-tight mb-4">
-              Building ideas<br />into reality.
-            </h2>
-            <div className="text-neutral-400 font-light tracking-wider text-xs md:text-sm leading-relaxed space-y-1">
-              <p>Modern interfaces.</p>
-              <p>Creative engineering.</p>
-              <p>Meaningful experiences.</p>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* Section 4: Earth (Headline: Turning vision into products.) */}
-        <section className="min-h-screen w-full flex items-center justify-end px-6 md:px-24 bg-transparent">
-          <motion.div
-            initial={{ opacity: 0, y: 30, filter: "blur(12px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-lg text-left"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight uppercase text-white leading-tight">
-              Turning vision<br />into products.
-            </h2>
-          </motion.div>
-        </section>
-
-        {/* Section 5: Call to Action (Headline: Let's Build Something Extraordinary.) */}
-        <section className="min-h-screen w-full flex items-center justify-start px-6 md:px-24 bg-transparent">
-          <motion.div
-            initial={{ opacity: 0, y: 30, filter: "blur(12px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-lg text-left"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter uppercase text-white leading-none mb-8">
+            <h2 className="text-2xl md:text-4xl font-bold tracking-tighter uppercase text-white leading-tight mb-8">
               Let's Build Something<br />Extraordinary.
             </h2>
             <div className="flex gap-4 flex-wrap">
