@@ -32,18 +32,14 @@ export default function PortfolioContent() {
             </h2>
             <div className="space-y-6 text-neutral-400 leading-relaxed text-lg font-light tracking-wide">
               <p>
-                I am currently pursuing a Bachelor of Computer Applications (BCA)
-                and studying to become a data analyst, while exploring the world
-                of programming and web development. Although I do not have professional
-                experience yet, I am continuously learning and building projects
-                to improve my skills. I am passionate about creating user-friendly,
-                visually appealing interfaces, and uncovering insights from data.
+                Motivated Bachelor of Computer Applications (BCA) student and tech enthusiast with hands-on experience 
+                developing responsive web applications and a strong interest in Data Analytics. Skilled in problem-solving, 
+                communication, and learning new technologies quickly. Currently building expertise in Python, data analysis, and 
+                modern web technologies while delivering user-focused solutions.
               </p>
               <p>
-                Along with programming, I enjoy exploring design patterns,
-                problem-solving, and keeping up with new technologies. In the
-                future, I hope to expand my expertise in frameworks like React,
-                Vue, and backend technologies like Node.js.
+                Along with web development, I enjoy exploring data analysis workflows, database systems,
+                and uncovering insights to build user-centered software products.
               </p>
             </div>
 
@@ -390,6 +386,81 @@ export default function PortfolioContent() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Experience & Education Section */}
+      <section id="experience" className="py-32 md:py-48 w-full bg-transparent border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+
+            {/* Experience Column */}
+            <div>
+              <div className="mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 uppercase text-white/90">
+                  Professional Experience
+                </h2>
+                <p className="text-neutral-500 font-light tracking-widest text-sm uppercase">
+                  Industry & Work History
+                </p>
+              </div>
+
+              <div className="space-y-8">
+                <div className="bg-neutral-950/85 border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <h3 className="text-lg font-medium text-white/90 tracking-wide">Customer Support & Lead Generation Specialist</h3>
+                    <span className="text-xs font-mono text-neutral-400 border border-white/10 px-3 py-1 rounded-full">
+                      June 2025 – July 2026
+                    </span>
+                  </div>
+                  <p className="text-neutral-400 text-sm font-medium mb-4">LQ Innovations</p>
+                  <ul className="space-y-2.5 text-neutral-400 font-light text-sm leading-relaxed tracking-wide list-disc list-inside">
+                    <li>Managed customer support and client communication.</li>
+                    <li>Generated and qualified leads through outbound outreach.</li>
+                    <li>Scheduled meetings with prospective clients for the sales team.</li>
+                    <li>Maintained CRM records and supported business development activities.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Education & Languages Column */}
+            <div>
+              <div className="mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 uppercase text-white/90">
+                  Education & Languages
+                </h2>
+                <p className="text-neutral-500 font-light tracking-widest text-sm uppercase">
+                  Academic & Linguistic Qualifications
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="bg-neutral-950/85 border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <h3 className="text-lg font-medium text-white/90 tracking-wide">Bachelor of Computer Applications (BCA)</h3>
+                    <span className="text-xs font-mono text-neutral-400 border border-white/10 px-3 py-1 rounded-full">
+                      2024 – 2027
+                    </span>
+                  </div>
+                  <p className="text-neutral-400 text-sm font-medium mb-2">Amar Singh College, Cluster University Srinagar</p>
+                  <p className="text-neutral-500 text-xs font-light tracking-wider uppercase">Expected Graduation: 2027</p>
+                </div>
+
+                <div className="bg-neutral-950/85 border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300">
+                  <h3 className="text-base font-medium text-white/90 tracking-wide mb-4 uppercase">Languages</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {["English", "Hindi", "Urdu", "Kashmiri"].map((lang) => (
+                      <span key={lang} className="text-xs font-mono text-neutral-300 border border-white/10 bg-neutral-900 px-4 py-2 rounded-lg">
+                        {lang}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
