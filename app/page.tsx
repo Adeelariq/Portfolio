@@ -1,9 +1,7 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 
 import HeroJourney from "../components/HeroJourney";
@@ -15,19 +13,22 @@ const PortfolioContent = dynamic(() => import("../components/PortfolioContent"),
 });
 
 export default function Home() {
+  const lenisRef = useRef<Lenis | null>(null);
+
   useEffect(() => {
-    // 1. Initialize Lenis smooth scroll
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 0.9,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 1.0,
-      syncTouch: true, // Enable smooth momentum scrolling on touch devices
+      syncTouch: true,
     });
 
-    // 2. Continuous requestAnimationFrame scroll loop
+    lenisRef.current = lenis;
+    (window as Window & { __lenis?: Lenis }).__lenis = lenis;
+
     let rafId: number;
     function raf(time: number) {
       lenis.raf(time);
@@ -35,21 +36,18 @@ export default function Home() {
     }
     rafId = requestAnimationFrame(raf);
 
-    // 3. Connect GSAP ScrollTrigger updating directly to Lenis
-    lenis.on("scroll", () => {
-      ScrollTrigger.update();
-    });
-
-    // Hook GSAP custom ticker to drive Lenis updates
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-
     return () => {
-      lenis.destroy();
       cancelAnimationFrame(rafId);
+      lenis.destroy();
+      lenisRef.current = null;
+      delete (window as Window & { __lenis?: Lenis }).__lenis;
     };
   }, []);
+
+  const scrollToTop = (e: React.MouseEvent) => {
+    e.preventDefault();
+    lenisRef.current?.scrollTo(0);
+  };
 
   return (
     <div id="page-wrapper" className="relative min-h-screen bg-spacebg w-full">
@@ -59,10 +57,7 @@ export default function Home() {
           <div className="flex items-center justify-between h-16">
             <a
               href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
+              onClick={scrollToTop}
               className="text-xs font-semibold tracking-[0.2em] text-white hover:text-neutral-400 transition-colors uppercase font-mono"
             >
               Adeel Ariq

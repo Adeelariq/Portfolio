@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import OutlineFillText from "./FlickerText";
 
 const TOTAL_FRAMES = 192;
+const LATE_FRAME_BATCH_SIZE = 30;
 
 const VIDEO_SRC = "/images/Firefly Astronaut drifts near the Sun, exactly as shown in the first reference image. The Sun remain.mp4";
 const VIDEO_FALLBACK_SRC = "/images/astronaut.mp4";
@@ -116,9 +117,8 @@ export default function HeroJourney() {
     const iw = image.width;
     const ih = image.height;
 
-    // Enable high-quality smoothing before drawing to preserve fine star/astronaut detail
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
+    ctx.imageSmoothingQuality = isMobileRef.current ? "medium" : "high";
 
     // Cover Strategy (fills the entire screen, scaling to cover, cropped if necessary, centered)
     const ratio = Math.max(cw / iw, ch / ih);
@@ -137,8 +137,9 @@ export default function HeroJourney() {
   // Keep track of loaded image cache size to maintain stable GPU/system memory
   const manageCacheMemory = useCallback(() => {
     const isMobile = isMobileRef.current;
-    const currentPreloadCount = isMobile ? 12 : 30;
-    const currentMaxCacheLimit = isMobile ? 40 : 100;
+    const currentPreloadCount = isMobile ? 6 : 30;
+    const currentMaxCacheLimit = isMobile ? 60 : 120;
+    const lateFrameStart = TOTAL_FRAMES - LATE_FRAME_BATCH_SIZE;
 
     let loadedCount = 0;
     const evictableIndices: number[] = [];
@@ -146,8 +147,9 @@ export default function HeroJourney() {
     for (let i = 0; i < TOTAL_FRAMES; i++) {
       if (preloadedImagesRef.current[i] !== null) {
         loadedCount++;
-        // Do not evict initial preload frames (0 to currentPreloadCount - 1)
-        if (i >= currentPreloadCount) {
+        const isProtected =
+          i < currentPreloadCount || i >= lateFrameStart;
+        if (!isProtected) {
           evictableIndices.push(i);
         }
       }
@@ -171,9 +173,46 @@ export default function HeroJourney() {
   }, []);
 
   // Asynchronously download and decode remaining frames with priority sorting
+  const preloadLateFrames = useCallback(() => {
+    const isMobile = isMobileRef.current;
+    const maxConcurrent = isMobile ? 4 : 6;
+    const lateFrameStart = TOTAL_FRAMES - LATE_FRAME_BATCH_SIZE;
+
+    const loadNextLateFrame = () => {
+      if (activeDownloadsRef.current.size >= maxConcurrent) return;
+
+      for (let i = lateFrameStart; i < TOTAL_FRAMES; i++) {
+        if (activeDownloadsRef.current.size >= maxConcurrent) return;
+        if (preloadedImagesRef.current[i] !== null || activeDownloadsRef.current.has(i)) {
+          continue;
+        }
+
+        activeDownloadsRef.current.add(i);
+        decodeImage(getFrameUrl(i))
+          .then((decoded) => {
+            preloadedImagesRef.current[i] = decoded;
+            if (i === activeFrameIndexRef.current) {
+              requestAnimationFrame(drawFrame);
+            }
+          })
+          .catch(() => {
+            // Ignore late-frame preload failures; forward loader will retry.
+          })
+          .finally(() => {
+            activeDownloadsRef.current.delete(i);
+            manageCacheMemory();
+            loadNextLateFrame();
+          });
+        return;
+      }
+    };
+
+    loadNextLateFrame();
+  }, [drawFrame, manageCacheMemory]);
+
   const triggerBackgroundLoad = useCallback(() => {
     const isMobile = isMobileRef.current;
-    const currentMaxConcurrentDownloads = isMobile ? 3 : 6;
+    const currentMaxConcurrentDownloads = isMobile ? 4 : 6;
 
     const unloadedIndices: number[] = [];
     for (let i = 0; i < TOTAL_FRAMES; i++) {
@@ -213,15 +252,12 @@ export default function HeroJourney() {
     toDownload.forEach((idx) => {
       activeDownloadsRef.current.add(idx);
 
-      const scheduleWork = (cb: () => void) => {
-        if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-          window.requestIdleCallback(() => cb());
-        } else {
-          setTimeout(cb, 1);
-        }
-      };
+      const isHighPriority =
+        dir === "forward"
+          ? idx > curr && idx <= curr + 10
+          : idx < curr && idx >= curr - 10;
 
-      scheduleWork(() => {
+      const startDownload = () => {
         decodeImage(getFrameUrl(idx))
           .then((decoded) => {
             preloadedImagesRef.current[idx] = decoded;
@@ -229,7 +265,6 @@ export default function HeroJourney() {
 
             manageCacheMemory();
 
-            // If the loaded frame is the current frame, draw it immediately
             if (idx === activeFrameIndexRef.current) {
               requestAnimationFrame(drawFrame);
             }
@@ -241,14 +276,25 @@ export default function HeroJourney() {
             activeDownloadsRef.current.delete(idx);
             triggerBackgroundLoad();
           });
-      });
+      };
+
+      if (isHighPriority) {
+        startDownload();
+        return;
+      }
+
+      if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+        window.requestIdleCallback(() => startDownload());
+      } else {
+        setTimeout(startDownload, 1);
+      }
     });
   }, [drawFrame, manageCacheMemory]);
 
   // 1. Preload initial image sequence frames before hiding loading screen
   useEffect(() => {
     isMobileRef.current = window.innerWidth < 768;
-    const currentPreloadCount = isMobileRef.current ? 12 : 30;
+    const currentPreloadCount = isMobileRef.current ? 6 : 30;
     let loadedCount = 0;
 
     // Direct block scroll on mount
@@ -274,8 +320,8 @@ export default function HeroJourney() {
           drawFrame();
           setIsLoading(false);
           document.body.style.overflow = "";
-          // Start background downloader asynchronously
           triggerBackgroundLoad();
+          preloadLateFrames();
         });
       }
     };
@@ -293,6 +339,7 @@ export default function HeroJourney() {
           setIsLoading(false);
           document.body.style.overflow = "";
           triggerBackgroundLoad();
+          preloadLateFrames();
         });
       }
     };
@@ -312,7 +359,7 @@ export default function HeroJourney() {
         if (img) releaseImage(img);
       });
     };
-  }, [drawFrame, triggerBackgroundLoad]);
+  }, [drawFrame, triggerBackgroundLoad, preloadLateFrames]);
 
   // 3. Handle responsive resizing of the canvas backing store (DPR clamped to 2)
   const handleResize = useCallback(() => {
@@ -346,35 +393,39 @@ export default function HeroJourney() {
   useEffect(() => {
     if (isLoading) return;
 
+    let scrollRafId = 0;
+
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      
-      // Prevent division by zero
-      if (maxScroll <= 0) return;
+      if (scrollRafId) return;
 
-      const scrollProgress = Math.max(0, Math.min(1, scrollY / maxScroll));
+      scrollRafId = requestAnimationFrame(() => {
+        scrollRafId = 0;
 
-      if (!useVideo) {
-        // Map scroll progress directly from top of page (0%) to bottom of footer (100%)
-        const frameIndex = Math.round(scrollProgress * (TOTAL_FRAMES - 1));
-        const prevIndex = activeFrameIndexRef.current;
-        if (frameIndex !== prevIndex) {
-          scrollDirectionRef.current = frameIndex > prevIndex ? "forward" : "backward";
-          activeFrameIndexRef.current = frameIndex;
-          if (!isResizingRef.current) {
-            requestAnimationFrame(drawFrame);
+        const scrollY = window.scrollY;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+        if (maxScroll <= 0) return;
+
+        const scrollProgress = Math.max(0, Math.min(1, scrollY / maxScroll));
+
+        if (!useVideo) {
+          const frameIndex = Math.round(scrollProgress * (TOTAL_FRAMES - 1));
+          const prevIndex = activeFrameIndexRef.current;
+          if (frameIndex !== prevIndex) {
+            scrollDirectionRef.current = frameIndex > prevIndex ? "forward" : "backward";
+            activeFrameIndexRef.current = frameIndex;
+            if (!isResizingRef.current) {
+              drawFrame();
+            }
+            triggerBackgroundLoad();
           }
-          triggerBackgroundLoad();
-        }
-      } else {
-        const video = videoRef.current;
-        if (video && video.duration) {
-          requestAnimationFrame(() => {
+        } else {
+          const video = videoRef.current;
+          if (video && video.duration) {
             video.currentTime = scrollProgress * video.duration;
-          });
+          }
         }
-      }
+      });
     };
 
     // Run once to match initial scroll position
@@ -384,6 +435,7 @@ export default function HeroJourney() {
     window.addEventListener("resize", handleScroll);
 
     return () => {
+      if (scrollRafId) cancelAnimationFrame(scrollRafId);
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
@@ -393,13 +445,19 @@ export default function HeroJourney() {
   const scrollToProjects = (e: React.MouseEvent) => {
     e.preventDefault();
     const target = document.querySelector("#projects");
-    if (target) {
-      const targetPosition = target.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({
-        top: targetPosition,
-        behavior: "smooth",
-      });
+    if (!target) return;
+
+    const lenis = (window as Window & { __lenis?: { scrollTo: (target: Element) => void } }).__lenis;
+    if (lenis) {
+      lenis.scrollTo(target);
+      return;
     }
+
+    const targetPosition = target.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({
+      top: targetPosition,
+      behavior: "smooth",
+    });
   };
 
   return (

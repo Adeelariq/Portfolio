@@ -115,7 +115,7 @@ export default function PortfolioContent() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Project 1 */}
-            <div className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
+            <div className="group bg-neutral-950/85 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
               <div className="relative h-48 w-full bg-neutral-900 border-b border-white/5 overflow-hidden">
                 <Image
                   src="/images/chinar_agro_ai.webp"
@@ -149,7 +149,7 @@ export default function PortfolioContent() {
             </div>
 
             {/* Project 2 */}
-            <div className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
+            <div className="group bg-neutral-950/85 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
               <div className="relative h-48 w-full bg-neutral-900 border-b border-white/5 overflow-hidden">
                 <Image
                   src="/images/paper_thesis.webp"
@@ -185,7 +185,7 @@ export default function PortfolioContent() {
             </div>
 
             {/* Project 3 */}
-            <div className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
+            <div className="group bg-neutral-950/85 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
               <div className="relative h-48 w-full bg-neutral-900 border-b border-white/5 overflow-hidden">
                 <Image
                   src="/images/Champion.webp"
@@ -219,7 +219,7 @@ export default function PortfolioContent() {
             </div>
 
             {/* Project 4 */}
-            <div className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
+            <div className="group bg-neutral-950/85 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
               <div className="relative h-48 w-full bg-neutral-900 border-b border-white/5 overflow-hidden">
                 <Image
                   src="/images/VentureIQ.webp"
@@ -253,7 +253,7 @@ export default function PortfolioContent() {
             </div>
 
             {/* Project 5 */}
-            <div className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
+            <div className="group bg-neutral-950/85 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
               <div className="relative h-48 w-full bg-neutral-900 border-b border-white/5 overflow-hidden">
                 <Image
                   src="/images/tram.webp"
@@ -287,7 +287,7 @@ export default function PortfolioContent() {
             </div>
 
             {/* Project 6 */}
-            <div className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
+            <div className="group bg-neutral-950/85 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
               <div className="relative h-48 w-full bg-neutral-900 border-b border-white/5 overflow-hidden">
                 <Image
                   src="/images/result_logo.png"
@@ -321,7 +321,7 @@ export default function PortfolioContent() {
             </div>
 
             {/* Project 7 */}
-            <div className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
+            <div className="group bg-neutral-950/85 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
               <div className="relative h-48 w-full bg-neutral-900 border-b border-white/5 overflow-hidden">
                 <Image
                   src="/images/unnamed.webp"
@@ -355,7 +355,7 @@ export default function PortfolioContent() {
             </div>
 
             {/* Project 8 */}
-            <div className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
+            <div className="group bg-neutral-950/85 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
               <div className="relative h-48 w-full bg-neutral-900 border-b border-white/5 overflow-hidden">
                 <Image
                   src="/images/rock-paper-scissors-neon-icons.jpg"
@@ -389,7 +389,7 @@ export default function PortfolioContent() {
             </div>
 
             {/* Project 9 */}
-            <div className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
+            <div className="group bg-neutral-950/85 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
               <div className="relative h-48 w-full bg-neutral-900 border-b border-white/5 overflow-hidden">
                 <Image
                   src="/images/dal-lake-kashmir-in-winter.webp"
@@ -423,7 +423,7 @@ export default function PortfolioContent() {
             </div>
 
             {/* Project 10 */}
-            <div className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
+            <div className="group bg-neutral-950/85 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 flex flex-col justify-between h-[520px]">
               <div className="relative h-48 w-full bg-neutral-900 border-b border-white/5 overflow-hidden">
                 <Image
                   src="/images/Fitness Hive.webp"
@@ -473,42 +473,42 @@ export default function PortfolioContent() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {/* Skill 1 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
+            <div className="bg-neutral-950/85 border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
               <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" className="w-8 h-8" />
               <span className="text-neutral-300 font-light tracking-wider text-sm uppercase">HTML5</span>
             </div>
             {/* Skill 2 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
+            <div className="bg-neutral-950/85 border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
               <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" className="w-8 h-8" />
               <span className="text-neutral-300 font-light tracking-wider text-sm uppercase">CSS3</span>
             </div>
             {/* Skill 3 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
+            <div className="bg-neutral-950/85 border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
               <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" alt="Bootstrap" className="w-8 h-8" />
               <span className="text-neutral-300 font-light tracking-wider text-sm uppercase">Bootstrap</span>
             </div>
             {/* Skill 4 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
+            <div className="bg-neutral-950/85 border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
               <img src="https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg" alt="Tailwind" className="w-8 h-8" />
               <span className="text-neutral-300 font-light tracking-wider text-sm uppercase">Tailwind</span>
             </div>
             {/* Skill 5 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
+            <div className="bg-neutral-950/85 border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
               <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" className="w-8 h-8" />
               <span className="text-neutral-300 font-light tracking-wider text-sm uppercase">JavaScript</span>
             </div>
             {/* Skill 6 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
+            <div className="bg-neutral-950/85 border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
               <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg" alt="C" className="w-8 h-8" />
               <span className="text-neutral-300 font-light tracking-wider text-sm uppercase">C Programming</span>
             </div>
             {/* Skill 7 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
+            <div className="bg-neutral-950/85 border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32">
               <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="PHP" className="w-8 h-8" />
               <span className="text-neutral-300 font-light tracking-wider text-sm uppercase">PHP</span>
             </div>
             {/* Skill 8 (Python with libraries hover box) */}
-            <div className="relative group bg-neutral-950/60 backdrop-blur-sm border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32 cursor-pointer">
+            <div className="relative group bg-neutral-950/85 border border-white/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover:border-white/20 transition-all duration-300 h-32 cursor-pointer">
               <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" className="w-8 h-8" />
               <span className="text-neutral-300 font-light tracking-wider text-sm uppercase">Python</span>
 
@@ -538,7 +538,7 @@ export default function PortfolioContent() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Card 1 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
+            <div className="bg-neutral-950/85 border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
               <div>
                 <div className="w-12 h-12 border border-white/10 rounded-lg flex items-center justify-center mb-8 text-neutral-400">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -554,7 +554,7 @@ export default function PortfolioContent() {
               </div>
             </div>
             {/* Card 2 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
+            <div className="bg-neutral-950/85 border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
               <div>
                 <div className="w-12 h-12 border border-white/10 rounded-lg flex items-center justify-center mb-8 text-neutral-400">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -570,7 +570,7 @@ export default function PortfolioContent() {
               </div>
             </div>
             {/* Card 3 */}
-            <div className="bg-neutral-950/60 backdrop-blur-sm border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
+            <div className="bg-neutral-950/85 border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex flex-col justify-between">
               <div>
                 <div className="w-12 h-12 border border-white/10 rounded-lg flex items-center justify-center mb-8 text-neutral-400">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -604,7 +604,7 @@ export default function PortfolioContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <a
               href="mailto:Adeelariq786@gmail.com"
-              className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex items-center gap-6"
+              className="group bg-neutral-950/85 border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex items-center gap-6"
             >
               <div className="w-12 h-12 border border-white/10 rounded-lg flex items-center justify-center text-neutral-400 group-hover:text-white group-hover:border-white transition-colors duration-300">
                 <svg
@@ -630,7 +630,7 @@ export default function PortfolioContent() {
 
             <a
               href="tel:+916005469890"
-              className="group bg-neutral-950/60 backdrop-blur-sm border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex items-center gap-6"
+              className="group bg-neutral-950/85 border border-white/5 p-8 rounded-xl hover:border-white/20 transition-all duration-300 flex items-center gap-6"
             >
               <div className="w-12 h-12 border border-white/10 rounded-lg flex items-center justify-center text-neutral-400 group-hover:text-white group-hover:border-white transition-colors duration-300">
                 <svg
@@ -657,7 +657,7 @@ export default function PortfolioContent() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-neutral-950/40 backdrop-blur-md text-neutral-600 text-center py-12 border-t border-white/5 font-light tracking-wider text-xs w-full">
+      <footer className="bg-neutral-950/90 text-neutral-600 text-center py-12 border-t border-white/5 font-light tracking-wider text-xs w-full">
         <p>&copy; {new Date().getFullYear()} Adeel Ariq Sheikh. All Rights Reserved.</p>
       </footer>
     </div>
