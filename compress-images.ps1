@@ -9,13 +9,9 @@ $images = @(
     "me.webp",
     "tram.png",
     "VentureIQ.png",
-    "dal-lake-kashmir-in-winter.jpg",
     "paper_thesis.png",
     "Champion.webp",
-    "unnamed.png",
-    "Fitness Hive.webp",
     "result_logo.png",
-    "rock-paper-scissors-neon-icons.jpg",
     "android-chrome-512x512.png",
     "android-chrome-192x192.png"
 )
